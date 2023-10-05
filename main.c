@@ -30,6 +30,7 @@ typedef struct Playback {
 } Playback;
 
 int search(char name[100]);
+char* username();
 
 // Init
 Playback *playback;
@@ -70,4 +71,27 @@ int search(char name[100]) {
     }
     fclose(file);
     return -1;
+}
+
+char* username() {
+    int choice;
+    char* name = (char*) malloc(100 * sizeof(char));
+    printf("\t1. New user\n\t"
+           "2. Choose user\n"
+    );
+    scanf("%d", &choice);
+    getchar();
+
+    if (choice == 1) {
+        printf("\tEnter a username: ");
+        gets(name);
+        while (search(name) != -1) {
+            printf("\t%s already exists.\n Try again: ", name);
+            gets(name);
+        }
+        FILE *fp = fopen("users.txt", "a");
+        fprintf(fp, "\n%s 0", name);
+        fclose(fp);
+    } 
+    return name;
 }
