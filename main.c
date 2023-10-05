@@ -92,6 +92,21 @@ char* username() {
         FILE *fp = fopen("users.txt", "a");
         fprintf(fp, "\n%s 0", name);
         fclose(fp);
-    } 
+    } else if (choice == 2) {
+        FILE *fp = fopen("users.txt", "r");
+        char tmpName[100], coins[10];
+        printf("\tUsers:\n\n");
+        while (!feof(fp)) {
+            fscanf(fp, "%s %s", tmpName, coins);
+            printf("\t%s %s\n", tmpName, coins);
+        }
+        printf("\tChoose the user:\n");
+        gets(name);
+        while (search(name) == -1) {
+            printf("\t%s does not exist! Try again:", name);
+            gets(name);
+        }
+        fclose(fp);
+    }
     return name;
 }
