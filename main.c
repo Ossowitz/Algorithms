@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 typedef struct User {
     char name[100], str_coins[10];
@@ -28,6 +29,8 @@ typedef struct Playback {
     struct Playback *next;
 } Playback;
 
+int search(char name[100]);
+
 // Init
 Playback *playback;
 Ship ships[30];
@@ -46,6 +49,25 @@ int main() {
         scanf("%d", &choice);
         getchar();
         system("cls");
+        switch (choice) {
+            case 2:
+
+        }
     } while (choice != 4);
     return 0;
+}
+
+int search(char name[100]) {
+    char tmpName[100], coins[10];
+    FILE *file = fopen("users.txt", "r");
+    while (!feof(file)) {
+        fscanf(file, "%s %s", tmpName, coins);
+        if (strcmp(name, tmpName) == 0) {
+            fclose(file);
+            int score = atoi(coins);
+            return score;
+        }
+    }
+    fclose(file);
+    return -1;
 }
