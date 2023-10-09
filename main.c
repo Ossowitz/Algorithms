@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <string.h>
 
 typedef struct User {
     char name[100], str_coins[10];
     int coins, tmp_coins, missile;
-    bool winner;
 } User;
 
 typedef struct Ship {
@@ -31,6 +29,8 @@ typedef struct Playback {
 
 int search(char name[100]);
 char* username();
+void init_ship_info();
+char** init_map();
 
 // Init
 Playback *playback;
@@ -42,6 +42,7 @@ int numOfTotalShips = 10, largest_ship_area = 5;
 int main() {
     char **map1, **map2, **map_enemy1, **map_enemy2;
     int choice;
+    init_ship_info();
 
     do {
         printf("\t1. Play with a friend\n\t"
@@ -54,6 +55,14 @@ int main() {
         system("cls");
         switch (choice) {
             case 2:
+                strcpy(users[0].name, username());
+                users[0].coins = search(users[0].name);
+                system("cls");
+                users[0].tmp_coins = 0; users[1].tmp_coins = 0;
+                map1 = init_map();
+                map2 = init_map();
+                printf("\t%s\n", users[0].name);
+                printf("\tYour map:\n");
         }
     } while (choice != 4);
     return 0;
@@ -111,8 +120,20 @@ char* username() {
     return name;
 }
 
+char** init_map() {
+    char **map = (char**)malloc(maprow * sizeof(char*));
+    for (int i = 0; i < maprow; i++) {
+        map[i] = (char*)malloc(mapcol * sizeof(char));
+    }
+    for (int i = 0; i < maprow; i++) {
+        for (int j = 0; j < mapcol; j++)
+            map[i][j] = '.';
+    }
+    return map;
+}
+
 void init_ship_info() {
-    ships[0].length = 5;
+    ships[0].length = 4;
     ships[0].width = 1;
     for (int i = 1; i <= 2; i++) {
         ships[i].length = 3;
