@@ -31,6 +31,7 @@ int search(char name[100]);
 char* username();
 void init_ship_info();
 char** init_map();
+void displayMap();
 
 // Init
 Playback *playback;
@@ -63,9 +64,42 @@ int main() {
                 map2 = init_map();
                 printf("\t%s\n", users[0].name);
                 printf("\tYour map:\n");
+                displayMap(map1);
+                int i = 1;
+                while (i) {
+                    map1 = init_map();
+
+                }
         }
     } while (choice != 4);
     return 0;
+}
+
+void displayMap(char **map) {
+    printf("\t  ");
+    for (int i = 0; i < mapcol; i++) {
+        printf("%d ", i);
+    }
+    printf("\n");
+    for (int i = 0; i < maprow; i++) {
+        printf("\t%d ", i);
+        for (int j = 0; j < mapcol; j++) {
+            if (map[i][j] == 'w') {
+                printf("%c ", map[i][j]);
+            }else if (map[i][j] == 'e') {
+                printf("%c ", map[i][j]);
+            } else if (map[i][j] == 'c') {
+                printf( "%c " , map[i][j]);
+            } else if (map[i][j] == 's') {
+                printf( "%c " , map[i][j]);
+            } else if (map[i][j] == 'x') {
+                printf( "%c " , map[i][j]);
+            } else {
+                printf("%c ", map[i][j]);
+            }
+        }
+        printf("\n");
+    }
 }
 
 int search(char name[100]) {
@@ -126,8 +160,9 @@ char** init_map() {
         map[i] = (char*)malloc(mapcol * sizeof(char));
     }
     for (int i = 0; i < maprow; i++) {
-        for (int j = 0; j < mapcol; j++)
+        for (int j = 0; j < mapcol; j++) {
             map[i][j] = '.';
+        }
     }
     return map;
 }
