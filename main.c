@@ -42,6 +42,8 @@ void displayMap();
 
 Node *putships_auto(char ***map);
 
+void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy2, Node *head1, Node *head2);
+
 // Init
 Playback *playback;
 Ship ships[30];
@@ -309,7 +311,30 @@ char **complete_explosion(char **map, char **map_enemy, Node *curr_ship) {
     return map_enemy;
 }
 
-void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy2, node *head1, node *head2) {
+void savescores() {
+    //better way is to realloc "all" everytime u wanna read smth into it:)
+    int i, coin;
+    //User all[500];
+    User *all = (User *) malloc(sizeof(User));
+    FILE *fpin = fopen("users.txt", "r");
+    for (i = 0; !feof(fpin); i++) {
+        all = (User *) realloc(all, (i + 1) * sizeof(User));
+        fscanf(fpin, "%s %s", &all[i].name, &all[i].str_coins);
+        if (strcmp(all[i].name, users[0].name) == 0)
+            sprintf(all[i].str_coins, "%d", users[0].coins);
+        else if (strcmp(all[i].name, users[1].name) == 0)
+            sprintf(all[i].str_coins, "%d", users[1].coins);
+    }
+    int num_of_useres = i;
+    fclose(fpin);
+    FILE *fpout = fopen("users.txt", "w");
+    for (i = 0; i < num_of_useres; i++) {
+        fprintf(fpout, "%s %s\n", all[i].name, all[i].str_coins);
+    }
+    fclose(fpout);
+}
+
+void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy2, Node *head1, Node *head2) {
     srand(time(0));
     int choice, difficulty;
     printf("\tChoose the game's difficulty:\n\t(1)easy\n\t(2)hard\n");
