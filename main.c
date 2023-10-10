@@ -31,11 +31,16 @@ typedef struct Playback {
 } Playback;
 
 int search(char name[100]);
-char* username();
+
+char *username();
+
 void init_ship_info();
-char** init_map();
+
+char **init_map();
+
 void displayMap();
-Node* putships_auto(char*** map);
+
+Node *putships_auto(char ***map);
 
 // Init
 Playback *playback;
@@ -65,7 +70,8 @@ int main() {
                 strcpy(users[0].name, username());
                 users[0].coins = search(users[0].name);
                 system("cls");
-                users[0].tmp_coins = 0; users[1].tmp_coins = 0;
+                users[0].tmp_coins = 0;
+                users[1].tmp_coins = 0;
                 map1 = init_map();
                 map2 = init_map();
                 map_enemy1 = init_map();
@@ -75,8 +81,7 @@ int main() {
                 printf("\tThis is your map:\n");
                 displayMap(map1);
                 i = 1;
-                while (i)
-                {
+                while (i) {
                     map1 = init_map(); //reset the map
                     head1 = putships_auto(&map1);
                     printf("\tPress 0 to continue\n\tPress 1 to get another map\n");
@@ -86,7 +91,7 @@ int main() {
                 Sleep(1000);
                 system("cls");
                 head2 = putships_auto(&map2);
-                //battleWithBot(map1, map2, map_enemy1, map_enemy2, head1, head2);
+                battleWithBot(map1, map2, map_enemy1, map_enemy2, head1, head2);
                 break;
         }
     } while (choice != 4);
@@ -104,14 +109,14 @@ void displayMap(char **map) {
         for (int j = 0; j < mapcol; j++) {
             if (map[i][j] == 'w') {
                 printf("%c ", map[i][j]);
-            }else if (map[i][j] == 'e') {
+            } else if (map[i][j] == 'e') {
                 printf("%c ", map[i][j]);
             } else if (map[i][j] == 'c') {
-                printf( "%c " , map[i][j]);
+                printf("%c ", map[i][j]);
             } else if (map[i][j] == 's') {
-                printf( "%c " , map[i][j]);
+                printf("%c ", map[i][j]);
             } else if (map[i][j] == 'x') {
-                printf( "%c " , map[i][j]);
+                printf("%c ", map[i][j]);
             } else {
                 printf("%c ", map[i][j]);
             }
@@ -134,9 +139,10 @@ int search(char name[100]) {
     fclose(file);
     return -1;
 }
-char* username() {
+
+char *username() {
     int choice;
-    char* name = (char*) malloc(100 * sizeof(char));
+    char *name = (char *) malloc(100 * sizeof(char));
     printf("\t1. New user\n\t"
            "2. Choose user\n"
     );
@@ -172,10 +178,10 @@ char* username() {
     return name;
 }
 
-char** init_map() {
-    char **map = (char**)malloc(maprow * sizeof(char*));
+char **init_map() {
+    char **map = (char **) malloc(maprow * sizeof(char *));
     for (int i = 0; i < maprow; i++) {
-        map[i] = (char*)malloc(mapcol * sizeof(char));
+        map[i] = (char *) malloc(mapcol * sizeof(char));
     }
     for (int i = 0; i < maprow; i++) {
         for (int j = 0; j < mapcol; j++) {
@@ -202,28 +208,23 @@ void init_ship_info() {
     }
 }
 
-Node* createNode(int length, int width) {
-    Node *res = (Node*)malloc(sizeof(Node));
+Node *createNode(int length, int width) {
+    Node *res = (Node *) malloc(sizeof(Node));
     res->info.length = length;
     res->info.width = width;
     res->next = NULL;
     return res;
 }
 
-char **update_map(int x_head, int y_head, int x_tail, int y_tail, char **map)
-{
+char **update_map(int x_head, int y_head, int x_tail, int y_tail, char **map) {
     int x, y;
-    for (y = y_head; y <= y_tail; y++)
-    {
-        for (x = x_head; x <= x_tail; x++)
-        {
+    for (y = y_head; y <= y_tail; y++) {
+        for (x = x_head; x <= x_tail; x++) {
             map[y][x] = 's';
         }
     }
-    for (y = (y_head - 1 >= 0 ? y_head - 1 : y_head); y <= (y_tail + 1 < maprow ? y_tail + 1 : y_tail); y++)
-    {
-        for (x = (x_head - 1 >= 0 ? x_head - 1 : x_head); x <= (x_tail + 1 < mapcol ? x_tail + 1 : x_tail); x++)
-        {
+    for (y = (y_head - 1 >= 0 ? y_head - 1 : y_head); y <= (y_tail + 1 < maprow ? y_tail + 1 : y_tail); y++) {
+        for (x = (x_head - 1 >= 0 ? x_head - 1 : x_head); x <= (x_tail + 1 < mapcol ? x_tail + 1 : x_tail); x++) {
             if (map[y][x] != 's')
                 map[y][x] = 'w';
         }
@@ -231,13 +232,10 @@ char **update_map(int x_head, int y_head, int x_tail, int y_tail, char **map)
     return map;
 }
 
-bool check_map(int x_head, int y_head, int x_tail, int y_tail, char **map)
-{
+bool check_map(int x_head, int y_head, int x_tail, int y_tail, char **map) {
     int x, y;
-    for (y = y_head; y <= y_tail; y++)
-    {
-        for (x = x_head; x <= x_tail; x++)
-        {
+    for (y = y_head; y <= y_tail; y++) {
+        for (x = x_head; x <= x_tail; x++) {
             if (map[y][x] == 's')
                 return false;
             if (map[y][x] == 'w')
@@ -247,23 +245,19 @@ bool check_map(int x_head, int y_head, int x_tail, int y_tail, char **map)
     return true;
 }
 
-Node *putships_auto(char ***map)
-{
+Node *putships_auto(char ***map) {
     srand(time(NULL));
     int botShipDirection = rand() % 2;
     int i, x, y, deltaX, deltaY;
     Node *tmp, *new;
-    Node *head = (Node *)malloc(sizeof(Node));
+    Node *head = (Node *) malloc(sizeof(Node));
     head = createNode(ships[0].length, ships[0].width);
-    if (botShipDirection == 0)
-    { //vertical
+    if (botShipDirection == 0) { //vertical
         head->head.x = rand() % (mapcol - ships[0].width);
         head->head.y = rand() % (maprow - ships[0].length);
         head->tail.x = head->head.x + ships[0].width - 1;
         head->tail.y = head->head.y + ships[0].length - 1;
-    }
-    else
-    { //horizontal
+    } else { //horizontal
         head->head.x = rand() % (mapcol - ships[0].length);
         head->head.y = rand() % (maprow - ships[0].width);
         head->tail.x = head->head.x + ships[0].length - 1;
@@ -272,21 +266,16 @@ Node *putships_auto(char ***map)
     *map = update_map(head->head.x, head->head.y, head->tail.x, head->tail.y, *map);
     head->hit = 0;
     tmp = head;
-    for (int i = 1; i < numOfTotalShips; i++)
-    {
+    for (int i = 1; i < numOfTotalShips; i++) {
         new = createNode(ships[i].length, ships[i].width);
         botShipDirection = rand() % 2;
-        while (1)
-        {
-            if (botShipDirection == 0)
-            { //vertical
+        while (1) {
+            if (botShipDirection == 0) { //vertical
                 new->head.x = rand() % (mapcol - ships[i].width);
                 new->head.y = rand() % (maprow - ships[i].length);
                 new->tail.x = new->head.x + ships[i].width - 1;
                 new->tail.y = new->head.y + ships[i].length - 1;
-            }
-            else
-            { //horizontal
+            } else { //horizontal
                 new->head.x = rand() % (mapcol - ships[i].length);
                 new->head.y = rand() % (maprow - ships[i].width);
                 new->tail.x = new->head.x + ships[i].length - 1;
@@ -303,4 +292,210 @@ Node *putships_auto(char ***map)
     system("cls");
     displayMap(*map);
     return head;
+}
+
+void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy2, node *head1, node *head2) {
+    srand(time(0));
+    int choice, difficulty;
+    printf("\tChoose the game's difficulty:\n\t(1)easy\n\t(2)hard\n");
+    scanf("%d", &difficulty);
+    int x, y;
+    Node *curr, *prev;
+    bool bonus;
+    int coins1 = users[0].tmp_coins, coins2 = users[1].tmp_coins;
+
+    while (head1 && head2) {
+        bonus = true;
+        printf("\t%s\n", users[0].name);
+        while (bonus) {
+            system("cls");
+            printf("\t%s: ", users[0].name);
+            printf("%d\n", coins1);
+            printf("\tBot: ");
+            printf("%d\n", coins2);
+
+            printf("\n\t%s's map\n", users[0].name);
+            displayMap(map1);
+            printf("\n\tBot's map\n");
+            displayMap(map_enemy1); //enemy's map before shooting
+            printf("\tYou:\n");
+            scanf("%d %d", &x, &y);
+            if (map_enemy1[y][x] == '.' && (map2[y][x] == '.' || map2[y][x] == 'w')) {
+                map2[y][x] = 'x';
+                map_enemy1[y][x] = 'w';
+                bonus = false;
+            } else if (map2[y][x] == 's') {
+                //find the target ship in the linked list
+                curr = head2;
+                while (x < curr->head.x || x > curr->tail.x || y < curr->head.y || y > curr->tail.y) {
+                    prev = curr;
+                    curr = curr->next;
+                }
+                if (curr->hit != curr->info.length * curr->info.width - 1) { //the ship is not completely exploded
+                    map2[y][x] = 'e';
+                    map_enemy1[y][x] = 'e';
+                    coins1++;
+                    curr->hit++;
+                } else {
+                    map_enemy1 = complete_explosion(map2, map_enemy1, curr);
+                    map2[y][x] = 'e';
+                    printf("\n\t\tCOMPLETE EXPLOSION!\n");
+                    //remove the ship from the linked list
+                    if (curr == head2)
+                        head2 = head2->next;
+                    else
+                        prev->next = curr->next;
+                    int destroyed_ship_area = curr->info.length * curr->info.width;
+                    int score = 5 * largest_ship_area / destroyed_ship_area;
+                    coins1 += score + 1;
+                    if (head2 == NULL)
+                        break;
+                }
+            } else if (map2[y][x] == 'e' || map2[y][x] == 'x' || map_enemy1[y][x] == 'w')
+                printf("\tYou have already hit this target! Try again\n");
+            Sleep(1500);
+            system("cls");
+            printf("\t%s: ", users[0].name);
+            printf("%d\n", coins1);
+            printf("\tBot: ");
+            printf("%d\n", coins2);
+            printf("\n\t%s's map\n", users[0].name);
+            displayMap(map1);
+            printf("\n\tBot's map\n");
+            displayMap(map_enemy1); //result
+            Sleep(1500);
+        }
+        //bot's turn
+        bonus = true;
+        if (head2 == NULL)
+            break;
+        x = rand() % 10;
+        y = rand() % 10;
+        while (bonus) {
+            while (map1[y][x] == 'e' || map1[y][x] == 'x' ||
+                   map_enemy2[y][x] == 'w') { //the target has already been hit
+                bonus = true; //the bot can try again so it stays in the loop
+                x = rand() % mapcol;
+                y = rand() % maprow;
+            }
+            if (map_enemy2[y][x] == '.' && (map1[y][x] == '.' || map1[y][x] == 'w')) { //the target is the ocean
+                map1[y][x] = 'x';
+                map_enemy2[y][x] = 'w';
+                bonus = false;
+            } else if (map1[y][x] == 's') { //the target is a part of a ship
+                //find the target ship in the linked list
+                curr = head1;
+                while (x < curr->head.x || x > curr->tail.x || y < curr->head.y || y > curr->tail.y) {
+                    prev = curr;
+                    curr = curr->next;
+                }
+                if (curr->hit != curr->info.length * curr->info.width - 1) { //the ship is not completely exploded
+                    map1[y][x] = 'e';
+                    map_enemy2[y][x] = 'e';
+                    coins2++;
+                    curr->hit++;
+                    //generate another x,y coordinates as a bonus
+                    if (difficulty == 1) {
+                        x = rand() % mapcol;
+                        y = rand() % maprow;
+                    } else if (difficulty == 2) {
+                        bool found = false;
+                        while (1) {
+                            for (int i = 1;; i++) {
+                                if (x + i >= mapcol)
+                                    break;
+                                if (map1[y][x + i] == 's') {
+                                    x += i;
+                                    found = true;
+                                    break;
+                                }
+                                if (map1[y][x + i] == 'w')
+                                    break;
+                            }
+                            if (found) break;
+                            for (int i = 1;; i++) {
+                                if (x - i < 0)
+                                    break;
+                                if (map1[y][x - i] == 's') {
+                                    x -= i;
+                                    found = true;
+                                    break;
+                                }
+                                if (map1[y][x - i] == 'w')
+                                    break;
+                            }
+                            if (found) break;
+                            for (int i = 1;; i++) {
+                                if (y + i > maprow)
+                                    break;
+                                if (map1[y + i][x] == 's') {
+                                    y += i;
+                                    found = true;
+                                    break;
+                                }
+                                if (map1[y + i][x] == 'w')
+                                    break;
+                            }
+                            if (found) break;
+                            for (int i = 1;; i++) {
+                                if (y - i < 0)
+                                    break;
+                                if (map1[y - i][x] == 's') {
+                                    y -= i;
+                                    found = true;
+                                    break;
+                                }
+                                if (map1[y - i][x] == 'w')
+                                    break;
+                            }
+                            if (found) break;
+                        }
+                    }
+                } else {
+                    map_enemy2 = complete_explosion(map1, map_enemy2, curr);
+                    map1 = complete_explosion(map1, map1, curr);
+                    printf("\n\t\tCOMPLETE EXPLOSION!\n");
+                    //unlink the ship from the linked list
+                    if (curr == head1)
+                        head1 = head1->next;
+                    else
+                        prev->next = curr->next;
+                    int destroyed_ship_area = curr->info.length * curr->info.width;
+                    int score = 5 * largest_ship_area / destroyed_ship_area;
+                    coins2 += score + 1;
+                    if (head1 == NULL)
+                        break;
+                    //next target as a bonus
+                    x = rand() % mapcol;
+                    y = rand() % maprow;
+                }
+            }
+
+            Sleep(1500);
+            printf("\t%s: ", users[0].name);
+            printf("%d\n", coins1);
+            printf("\tBot: ");
+            printf("%d\n", coins2);
+            printf("\n\t%s's map\n", users[0].name);
+            displayMap(map1);
+            printf("\n\tBot's map\n");
+            displayMap(map_enemy1); //result
+            Sleep(1500);
+        }
+    }
+    //end of the game
+    if (head1 == NULL && head2 != NULL) {
+        printf("\tBot won!\n");
+        users[0].coins += coins1 / 2;
+    } else if (head2 == NULL && head1 != NULL) {
+        printf("\t%s won!\n", users[0].name);
+        users[0].coins += coins1;
+    } else {
+        printf("\tIt's a tie\n");
+        users[0].coins += coins1;
+    }
+    savescores();
+    printf("\tYou will be forwarded back to the menu...\n");
+    Sleep(5000);
+    system("cls");
 }
