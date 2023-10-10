@@ -294,6 +294,21 @@ Node *putships_auto(char ***map) {
     return head;
 }
 
+char **complete_explosion(char **map, char **map_enemy, Node *curr_ship) {
+    int x_head = curr_ship->head.x, y_head = curr_ship->head.y;
+    int x_tail = curr_ship->tail.x, y_tail = curr_ship->tail.y;
+    int x, y;
+    for (y = (y_head - 1 >= 0 ? y_head - 1 : y_head); y <= (y_tail + 1 <= maprow ? y_tail + 1 : y_tail); y++) {
+        for (x = (x_head - 1 >= 0 ? x_head - 1 : x_head); x <= (x_tail + 1 <= mapcol ? x_tail + 1 : x_tail); x++) {
+            if (map[y][x] == 's' || map[y][x] == 'e')
+                map_enemy[y][x] = 'c';
+            if (map[y][x] == 'w')
+                map_enemy[y][x] = 'w';
+        }
+    }
+    return map_enemy;
+}
+
 void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy2, node *head1, node *head2) {
     srand(time(0));
     int choice, difficulty;
