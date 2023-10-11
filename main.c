@@ -44,6 +44,8 @@ Node *putships_auto(char ***map);
 
 void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy2, Node *head1, Node *head2);
 
+void scoreboard();
+
 // Init
 Playback *playback;
 Ship ships[30];
@@ -95,9 +97,33 @@ int main() {
                 head2 = putships_auto(&map2);
                 battleWithBot(map1, map2, map_enemy1, map_enemy2, head1, head2);
                 break;
+            case 3:
+                scoreboard();
+                system("pause");
+                system("cls");
+                break;
         }
     } while (choice != 4);
     return 0;
+}
+
+void scoreboard() {
+    printf("\tSCOREBOARD\n\n");
+    //get data of all the users
+    User *all = (User *) malloc(sizeof(User));
+    FILE *fp = fopen("users.txt", "r");
+    int i, j, num, tmpscore;
+    char tmp[50];
+    for (i = 0; !feof(fp); i++) {
+        all = (User *) realloc(all, (i + 1) * sizeof(User));
+        fscanf(fp, "%s %s", &all[i].name, &all[i].str_coins);
+        all[i].coins = atoi(all[i].str_coins);
+    }
+    fclose(fp);
+    num = i;
+    //print the sorted list
+    for (i = 0; i < num; i++)
+        printf("\t%s %d\n", all[i].name, all[i].coins);
 }
 
 void displayMap(char **map) {
