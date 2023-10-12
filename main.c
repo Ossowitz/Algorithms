@@ -7,7 +7,7 @@
 
 typedef struct User {
     char name[100], str_coins[10];
-    int coins, tmp_coins, missile;
+    int coins, tmp_coins;
 } User;
 
 typedef struct Ship {
@@ -34,19 +34,18 @@ int search(char name[100]);
 
 char *username();
 
-void init_ship_info();
+void initShipInfo();
 
-char **init_map();
+char **initMap();
 
 void displayMap();
 
-Node *putships_auto(char ***map);
+Node *putShipsAuto(char ***map);
 
 void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy2, Node *head1, Node *head2);
 
 void scoreboard();
 
-// Init
 Playback *playback;
 Ship ships[30];
 User users[2];
@@ -55,55 +54,52 @@ int numOfTotalShips = 10, largest_ship_area = 5;
 
 int main() {
     char **map1, **map2, **map_enemy1, **map_enemy2;
-    int choice;
-    init_ship_info();
-
-    int i;
+    int choice, i;
+    initShipInfo();
     Node *head1, *head2;
     do {
-        printf("\t1. Play with a friend\n\t"
-               "2. Play with bot\n\t"
-               "3. Scoreboard\n\t"
-               "4. Exit\n"
+        printf("\t1. Play with bot\n\t"
+               "2. Scoreboard\n\t"
+               "3. Exit\n"
         );
         scanf("%d", &choice);
         getchar();
         system("cls");
         switch (choice) {
-            case 2:
+            case 1:
                 strcpy(users[0].name, username());
                 users[0].coins = search(users[0].name);
                 system("cls");
                 users[0].tmp_coins = 0;
                 users[1].tmp_coins = 0;
-                map1 = init_map();
-                map2 = init_map();
-                map_enemy1 = init_map();
-                map_enemy2 = init_map();
+                map1 = initMap();
+                map2 = initMap();
+                map_enemy1 = initMap();
+                map_enemy2 = initMap();
                 //put the ships on the board
                 printf("\t%s\n", users[0].name);
                 printf("\tThis is your map:\n");
                 displayMap(map1);
                 i = 1;
                 while (i) {
-                    map1 = init_map(); //reset the map
-                    head1 = putships_auto(&map1);
+                    map1 = initMap(); //reset the map
+                    head1 = putShipsAuto(&map1);
                     printf("\tPress 0 to continue\n\tPress 1 to get another map\n");
                     scanf("%d", &i);
                     getchar();
                 }
                 Sleep(1000);
                 system("cls");
-                head2 = putships_auto(&map2);
+                head2 = putShipsAuto(&map2);
                 battleWithBot(map1, map2, map_enemy1, map_enemy2, head1, head2);
                 break;
-            case 3:
+            case 2:
                 scoreboard();
                 system("pause");
                 system("cls");
                 break;
         }
-    } while (choice != 4);
+    } while (choice != 3);
     return 0;
 }
 
@@ -206,7 +202,7 @@ char *username() {
     return name;
 }
 
-char **init_map() {
+char **initMap() {
     char **map = (char **) malloc(maprow * sizeof(char *));
     for (int i = 0; i < maprow; i++) {
         map[i] = (char *) malloc(mapcol * sizeof(char));
@@ -219,7 +215,7 @@ char **init_map() {
     return map;
 }
 
-void init_ship_info() {
+void initShipInfo() {
     ships[0].length = 4;
     ships[0].width = 1;
     for (int i = 1; i <= 2; i++) {
@@ -273,7 +269,7 @@ bool check_map(int x_head, int y_head, int x_tail, int y_tail, char **map) {
     return true;
 }
 
-Node *putships_auto(char ***map) {
+Node *putShipsAuto(char ***map) {
     srand(time(NULL));
     int botShipDirection = rand() % 2;
     int i, x, y, deltaX, deltaY;
