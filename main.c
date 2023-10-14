@@ -53,10 +53,10 @@ int mapRow = 10, mapCol = 10;
 int numOfTotalShips = 10, largest_ship_area = 5;
 
 int main() {
-    char **map1, **map2, **map_enemy1, **map_enemy2;
     int choice, i;
-    initShipInfo();
+    char **map1, **map2, **map_enemy1, **map_enemy2;
     Node *head1, *head2;
+    initShipInfo();
     do {
         printf("\t1. Play with bot\n\t"
                "2. Scoreboard\n\t"
@@ -76,7 +76,6 @@ int main() {
                 map2 = initMap();
                 map_enemy1 = initMap();
                 map_enemy2 = initMap();
-                //put the ships on the board
                 printf("\t%s\n", users[0].name);
                 printf("\tThis is your map:\n");
                 displayMap(map1);
@@ -104,7 +103,6 @@ int main() {
 
 void scoreboard() {
     printf("\tSCOREBOARD\n\n");
-    //get data of all the users
     User *all = (User *) malloc(sizeof(User));
     FILE *fp = fopen("users.txt", "r");
     int i, j, num, tmpscore;
@@ -116,7 +114,6 @@ void scoreboard() {
     }
     fclose(fp);
     num = i;
-    //print the sorted list
     for (i = 0; i < num; i++)
         printf("\t%s %d\n", all[i].name, all[i].coins);
 }
@@ -275,12 +272,12 @@ Node *putShipsAuto(char ***map) {
     Node *tmp, *new;
     Node *head = (Node *) malloc(sizeof(Node));
     head = createNode(ships[0].length, ships[0].width);
-    if (botShipDirection == 0) { //vertical
+    if (botShipDirection == 0) {
         head->head.x = rand() % (mapCol - ships[0].width);
         head->head.y = rand() % (mapRow - ships[0].length);
         head->tail.x = head->head.x + ships[0].width - 1;
         head->tail.y = head->head.y + ships[0].length - 1;
-    } else { //horizontal
+    } else {
         head->head.x = rand() % (mapCol - ships[0].length);
         head->head.y = rand() % (mapRow - ships[0].width);
         head->tail.x = head->head.x + ships[0].length - 1;
@@ -332,10 +329,8 @@ char **complete_explosion(char **map, char **map_enemy, Node *curr_ship) {
     return map_enemy;
 }
 
-void savescores() {
-    //better way is to realloc "all" everytime u wanna read smth into it:)
+void saveScore() {
     int i, coin;
-    //User all[500];
     User *all = (User *) malloc(sizeof(User));
     FILE *fpin = fopen("users.txt", "r");
     for (i = 0; !feof(fpin); i++) {
@@ -346,10 +341,10 @@ void savescores() {
         else if (strcmp(all[i].name, users[1].name) == 0)
             sprintf(all[i].str_coins, "%d", users[1].coins);
     }
-    int num_of_useres = i;
+    int numberOfUser = i;
     fclose(fpin);
     FILE *fpout = fopen("users.txt", "w");
-    for (i = 0; i < num_of_useres; i++) {
+    for (i = 0; i < numberOfUser; i++) {
         fprintf(fpout, "%s %s\n", all[i].name, all[i].str_coins);
     }
     fclose(fpout);
@@ -378,7 +373,7 @@ void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy
             printf("\n\t%s's map\n", users[0].name);
             displayMap(map1);
             printf("\n\tBot's map\n");
-            displayMap(map_enemy1); //enemy's map before shooting
+            displayMap(map_enemy1);
             printf("\tYou:\n");
             scanf("%d %d", &x, &y);
             if (map_enemy1[y][x] == '.' && (map2[y][x] == '.' || map2[y][x] == 'w')) {
@@ -386,13 +381,12 @@ void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy
                 map_enemy1[y][x] = 'w';
                 bonus = false;
             } else if (map2[y][x] == 's') {
-                //find the target ship in the linked list
                 curr = head2;
                 while (x < curr->head.x || x > curr->tail.x || y < curr->head.y || y > curr->tail.y) {
                     prev = curr;
                     curr = curr->next;
                 }
-                if (curr->hit != curr->info.length * curr->info.width - 1) { //the ship is not completely exploded
+                if (curr->hit != curr->info.length * curr->info.width - 1) {
                     map2[y][x] = 'e';
                     map_enemy1[y][x] = 'e';
                     coins1++;
@@ -401,7 +395,6 @@ void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy
                     map_enemy1 = complete_explosion(map2, map_enemy1, curr);
                     map2[y][x] = 'e';
                     printf("\n\t\tCOMPLETE EXPLOSION!\n");
-                    //remove the ship from the linked list
                     if (curr == head2)
                         head2 = head2->next;
                     else
@@ -422,9 +415,8 @@ void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy
             printf("\n\t%s's map\n", users[0].name);
             displayMap(map1);
             printf("\n\tBot's map\n");
-            displayMap(map_enemy1); //result
+            displayMap(map_enemy1);
         }
-        //bot's turn
         bonus = true;
         if (head2 == NULL)
             break;
@@ -432,28 +424,26 @@ void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy
         y = rand() % 10;
         while (bonus) {
             while (map1[y][x] == 'e' || map1[y][x] == 'x' ||
-                   map_enemy2[y][x] == 'w') { //the target has already been hit
-                bonus = true; //the bot can try again so it stays in the loop
+                   map_enemy2[y][x] == 'w') {
+                bonus = true;
                 x = rand() % mapCol;
                 y = rand() % mapRow;
             }
-            if (map_enemy2[y][x] == '.' && (map1[y][x] == '.' || map1[y][x] == 'w')) { //the target is the ocean
+            if (map_enemy2[y][x] == '.' && (map1[y][x] == '.' || map1[y][x] == 'w')) {
                 map1[y][x] = 'x';
                 map_enemy2[y][x] = 'w';
                 bonus = false;
-            } else if (map1[y][x] == 's') { //the target is a part of a ship
-                //find the target ship in the linked list
+            } else if (map1[y][x] == 's') {
                 curr = head1;
                 while (x < curr->head.x || x > curr->tail.x || y < curr->head.y || y > curr->tail.y) {
                     prev = curr;
                     curr = curr->next;
                 }
-                if (curr->hit != curr->info.length * curr->info.width - 1) { //the ship is not completely exploded
+                if (curr->hit != curr->info.length * curr->info.width - 1) {
                     map1[y][x] = 'e';
                     map_enemy2[y][x] = 'e';
                     coins2++;
                     curr->hit++;
-                    //generate another x,y coordinates as a bonus
                     if (difficulty == 1) {
                         x = rand() % mapCol;
                         y = rand() % mapRow;
@@ -514,7 +504,6 @@ void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy
                     map_enemy2 = complete_explosion(map1, map_enemy2, curr);
                     map1 = complete_explosion(map1, map1, curr);
                     printf("\n\t\tCOMPLETE EXPLOSION!\n");
-                    //unlink the ship from the linked list
                     if (curr == head1)
                         head1 = head1->next;
                     else
@@ -524,7 +513,6 @@ void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy
                     coins2 += score + 1;
                     if (head1 == NULL)
                         break;
-                    //next target as a bonus
                     x = rand() % mapCol;
                     y = rand() % mapRow;
                 }
@@ -538,10 +526,9 @@ void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy
             printf("\n\t%s's map\n", users[0].name);
             displayMap(map1);
             printf("\n\tBot's map\n");
-            displayMap(map_enemy1); //result
+            displayMap(map_enemy1);
         }
     }
-    //end of the game
     if (head1 == NULL && head2 != NULL) {
         printf("\tBot won!\n");
         users[0].coins += coins1 / 2;
@@ -552,7 +539,7 @@ void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy
         printf("\tIt's a tie\n");
         users[0].coins += coins1;
     }
-    savescores();
+    saveScore();
     printf("\tYou will be forwarded back to the menu...\n");
     Sleep(5000);
     system("cls");
