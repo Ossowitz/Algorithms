@@ -295,7 +295,7 @@ Node *putShipsAuto(char ***map) {
                 new->head.y = rand() % (mapRow - ships[i].length);
                 new->tail.x = new->head.x + ships[i].width - 1;
                 new->tail.y = new->head.y + ships[i].length - 1;
-            } else { //horizontal
+            } else {
                 new->head.x = rand() % (mapCol - ships[i].length);
                 new->head.y = rand() % (mapRow - ships[i].width);
                 new->tail.x = new->head.x + ships[i].length - 1;
@@ -314,7 +314,7 @@ Node *putShipsAuto(char ***map) {
     return head;
 }
 
-char **complete_explosion(char **map, char **map_enemy, Node *curr_ship) {
+char **completeExplosion(char **map, char **map_enemy, Node *curr_ship) {
     int x_head = curr_ship->head.x, y_head = curr_ship->head.y;
     int x_tail = curr_ship->tail.x, y_tail = curr_ship->tail.y;
     int x, y;
@@ -392,7 +392,7 @@ void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy
                     coins1++;
                     curr->hit++;
                 } else {
-                    map_enemy1 = complete_explosion(map2, map_enemy1, curr);
+                    map_enemy1 = completeExplosion(map2, map_enemy1, curr);
                     map2[y][x] = 'e';
                     printf("\n\t\tCOMPLETE EXPLOSION!\n");
                     if (curr == head2)
@@ -501,8 +501,8 @@ void battleWithBot(char **map1, char **map2, char **map_enemy1, char **map_enemy
                         }
                     }
                 } else {
-                    map_enemy2 = complete_explosion(map1, map_enemy2, curr);
-                    map1 = complete_explosion(map1, map1, curr);
+                    map_enemy2 = completeExplosion(map1, map_enemy2, curr);
+                    map1 = completeExplosion(map1, map1, curr);
                     printf("\n\t\tCOMPLETE EXPLOSION!\n");
                     if (curr == head1)
                         head1 = head1->next;
